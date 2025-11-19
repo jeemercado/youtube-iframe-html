@@ -107,6 +107,10 @@
             onPlaybackQualityChange: onPlaybackQualityChange,
           },
         });
+        const iframe = player.getIframe();
+        if (iframe) {
+          iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        }
       }
 
       function onPlayerError(event) {
@@ -122,10 +126,7 @@
       }
 
       function onPlayerReady(event) {
-        const iframe = player.getIframe();
-        if (iframe) {
-          iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-        }
+ 
         sendMessageToRN({eventType: 'playerReady'});
       }
 
