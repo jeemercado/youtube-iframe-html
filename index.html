@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width," />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <style>
       body {
         margin: 0;
@@ -97,6 +98,7 @@
             iv_load_policy: iv_load_policy,
             modestbranding: modestbranding_s,
             cc_load_policy: showClosedCaptions_s,
+            origin: window.location.origin
           },
           events: {
             onReady: onPlayerReady,
@@ -121,6 +123,10 @@
       }
 
       function onPlayerReady(event) {
+        const iframe = player.getIframe();
+        if (iframe) {
+          iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        }
         sendMessageToRN({eventType: 'playerReady'});
       }
 
@@ -146,43 +152,6 @@
       document.addEventListener('msfullscreenchange', onFullScreenChange);
       document.addEventListener('mozfullscreenchange', onFullScreenChange);
       document.addEventListener('webkitfullscreenchange', onFullScreenChange);
-
-      window.addEventListener('message', function (event) {
-        const {data} = event;
-
-        try {
-          const parsedData = JSON.parse(data);
-          const {eventName, meta} = parsedData;
-
-          switch (eventName) {
-            case 'playVideo':
-              player.playVideo();
-              break;
-
-            case 'pauseVideo':
-              player.pauseVideo();
-              break;
-
-            case 'muteVideo':
-              player.mute();
-              break;
-
-            case 'unMuteVideo':
-              player.unMute();
-              break;
-
-            case 'setVolume':
-              player.setVolume(meta.volume);
-              break;
-
-            case 'setPlaybackRate':
-              player.setPlaybackRate(meta.playbackRate);
-              break;
-          }
-        } catch (error) {
-          console.error('Error parsing data', event, error);
-        }
-      });
     </script>
   </body>
 </html>
